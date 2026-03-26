@@ -1,7 +1,7 @@
 package service
 
 import (
-	"backend/online/server/dto"
+	"backend/online/internal/dto"
 	"bytes"
 	"context"
 	"encoding/json"

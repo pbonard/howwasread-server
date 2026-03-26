@@ -1,11 +1,11 @@
 package consumer
 
 import (
+	"backend/online/internal/service"
 	"context"
 	"errors"
 	"log"
 	"log/slog"
-	"backend/online/server/service"
 	"os"
 	"os/signal"
 	"sync"
@@ -53,7 +53,7 @@ func connectConsumer(groupID string) (sarama.ConsumerGroup, error) {
 	cfg.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategySticky()}
 	//if balance strategy need to be change flexible, use switch-case with config di
 	cfg.Consumer.Offsets.Initial = sarama.OffsetOldest
-	//this setting make possible to consume message which is stored but not consumed for certain reason like worker server down
+	//this setting make possible to consume message which is stored but not consumed for certain reason like worker internal down
 
 	return sarama.NewConsumerGroup([]string{os.Getenv("KAFKA_URL")}, groupID, cfg)
 }

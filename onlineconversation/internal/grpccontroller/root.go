@@ -1,7 +1,7 @@
 package grpccontroller
 
 import (
-	"backend/online/server/controller"
+	"backend/online/internal/controller"
 	pb "backend/proto"
 	"context"
 )

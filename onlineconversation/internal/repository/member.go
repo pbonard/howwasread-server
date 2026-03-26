@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"backend/online/server/document"
+	"backend/online/internal/document"
 	"context"
 	"log/slog"
 
@@ -36,7 +36,7 @@ func (r *Repository) SetServerIP(ctx context.Context, memberId uuid.UUID, ip str
 		UpdateOne(ctx, bson.M{"_id": bson.Binary{Subtype: 4, Data: memberId[:]}},
 			bson.M{"$set": bson.M{"server_ip": ip}})
 	if err != nil {
-		slog.Error("fail to set ip to member doc's server ips",
+		slog.Error("fail to set ip to member doc's internal ips",
 			"err", err)
 		return err
 	}
@@ -49,7 +49,7 @@ func (r *Repository) RemoveServerIP(ctx context.Context, memberId uuid.UUID) err
 		UpdateOne(ctx, bson.M{"_id": bson.Binary{Subtype: 4, Data: memberId[:]}},
 			bson.M{"$unset": bson.M{"server_ip": ""}})
 	if err != nil {
-		slog.Error("fail to remove ip to member doc's server ips",
+		slog.Error("fail to remove ip to member doc's internal ips",
 			"err", err)
 		return err
 	}

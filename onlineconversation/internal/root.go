@@ -1,12 +1,12 @@
-package server
+package internal
 
 import (
-	"backend/online/server/controller"
-	"backend/online/server/grpccontroller"
-	"backend/online/server/kafka/consumer"
-	"backend/online/server/kafka/producer"
-	"backend/online/server/repository"
-	"backend/online/server/service"
+	"backend/online/internal/controller"
+	"backend/online/internal/grpccontroller"
+	"backend/online/internal/kafka/consumer"
+	"backend/online/internal/kafka/producer"
+	"backend/online/internal/repository"
+	"backend/online/internal/service"
 	pb "backend/proto"
 	"log"
 	"log/slog"

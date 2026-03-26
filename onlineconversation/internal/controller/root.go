@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"backend/online/server/service"
+	"backend/online/internal/service"
 	"log/slog"
 	"net/http"
 

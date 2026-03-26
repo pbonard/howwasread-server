@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"backend/online/server/document"
+	"backend/online/internal/document"
 	"context"
 	"log/slog"
 	"time"

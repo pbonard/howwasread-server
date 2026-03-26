@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"backend/online/server/dto"
+	"backend/online/internal/dto"
 	"context"
 	"encoding/json"
 	"errors"
