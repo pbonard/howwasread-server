@@ -1,11 +1,11 @@
 package internal
 
 import (
-	"backend/online/internal/controller"
-	"backend/online/internal/grpccontroller"
-	"backend/online/internal/kafka/producer"
-	"backend/online/internal/repository"
-	"backend/online/internal/service"
+	"backend/onlineconversation/internal/controller"
+	"backend/onlineconversation/internal/grpccontroller"
+	"backend/onlineconversation/internal/kafka/producer"
+	"backend/onlineconversation/internal/repository"
+	"backend/onlineconversation/internal/service"
 	pb "backend/proto"
 	"log"
 	"log/slog"

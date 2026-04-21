@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"backend/online/internal/dto"
+	"backend/onlineconversation/internal/dto"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -14,11 +14,11 @@ import (
 )
 
 func conversationRouter(c *Controller) {
-	c.Router(POST, "/online/conversation/create", c.createConversation)
-	c.Router(GET, "/online/conversation/list", c.getConversations)
-	c.Router(GET, "/online/conversation/join", c.joinConversation)
-	c.Router(GET, "/online/conversation", c.getConversation)
-	c.Router(POST, "/online/conversation/ban", c.banParticipant)
+	c.Router(POST, "/onlineconversation/conversation/create", c.createConversation)
+	c.Router(GET, "/onlineconversation/conversation/list", c.getConversations)
+	c.Router(GET, "/onlineconversation/conversation/join", c.joinConversation)
+	c.Router(GET, "/onlineconversation/conversation", c.getConversation)
+	c.Router(POST, "/onlineconversation/conversation/ban", c.banParticipant)
 }
 
 func (c *Controller) createConversation(w http.ResponseWriter, r *http.Request) {

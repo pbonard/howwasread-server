@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"backend/online/internal/document"
+	"backend/onlineconversation/internal/document"
 	"context"
 	"log/slog"
 	"time"

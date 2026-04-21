@@ -1,7 +1,7 @@
 package service
 
 import (
-	"backend/online/internal/dto"
+	"backend/onlineconversation/internal/dto"
 	"backend/payload"
 	"bytes"
 	"context"

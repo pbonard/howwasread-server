@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/online/internal"
+	"backend/onlineconversation/internal"
 )
 
 func main() {
