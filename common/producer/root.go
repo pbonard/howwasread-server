@@ -10,12 +10,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type KafkaProducer struct {
-	producer sarama.AsyncProducer
+type Producer struct {
+	asyncProducer sarama.AsyncProducer
 }
 
-func NewKafkaProducer() *KafkaProducer {
-	producer, err := createProducer()
+func NewProducer(clientIdPrefix string) *Producer {
+	asyncProducer, err := createProducer(clientIdPrefix)
 	if err != nil {
 		slog.Error("fail to create producer",
 			"err", err,
@@ -23,12 +23,12 @@ func NewKafkaProducer() *KafkaProducer {
 		panic(err)
 	}
 	log.Print("success to create kafka producer")
-	kp := KafkaProducer{producer}
+	kp := Producer{asyncProducer}
 
 	return &kp
 }
 
-func createProducer() (sarama.AsyncProducer, error) {
+func createProducer(clientIdPrefix string) (sarama.AsyncProducer, error) {
 	cfg := sarama.NewConfig()
 	id, err := uuid.NewV7()
 	if err != nil {
@@ -36,7 +36,7 @@ func createProducer() (sarama.AsyncProducer, error) {
 		return nil, err
 	}
 
-	cfg.ClientID = "onlineconversation.producer." + id.String()
+	cfg.ClientID = clientIdPrefix + id.String()
 	//cfg.Net.SASL.Enable = true
 	//cfg.Net.SASL.Version = 1
 	//cfg.Net.SASL.Mechanism = sarama.SASLTypePlaintext
@@ -58,27 +58,41 @@ func createProducer() (sarama.AsyncProducer, error) {
 	return sarama.NewAsyncProducer([]string{os.Getenv("KAFKA_URL")}, cfg)
 }
 
-func (kp *KafkaProducer) PushMessage(topic string, value []byte) error {
+func (p *Producer) PushMessage(topic string, value []byte) error {
 
 	msg := sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.ByteEncoder(value),
 	}
 
-	kp.producer.Input() <- &msg
+	p.asyncProducer.Input() <- &msg
 
 	select {
-	case succeedMsg := <-kp.producer.Successes():
+	case succeedMsg := <-p.asyncProducer.Successes():
 		log.Print("Success to produce payload",
 			"partition", succeedMsg.Partition)
 		return nil
-	case err := <-kp.producer.Errors():
+	case err := <-p.asyncProducer.Errors():
 		log.Print("Failed to produce payload",
 			"err", err)
 		return err
 	}
 }
 
-func (kp *KafkaProducer) Close() error {
-	return kp.producer.Close()
+func (p *Producer) Close() error {
+	return p.asyncProducer.Close()
+}
+
+func (p *Producer) PushDeadLetter(reason error, originalTopic string, value []byte) error {
+	_ = []sarama.RecordHeader{
+		{Key: []byte("x-error-message"), Value: []byte(reason.Error())},
+		{Key: []byte("x-original-topic"), Value: []byte(originalTopic)},
+		{Key: []byte("x-failed-at"), Value: []byte(time.Now().Format(time.RFC3339))},
+	}
+	err := p.PushMessage("dlq", value)
+	if err != nil {
+		slog.Error("fail to publish dead letter", "err", err)
+		return err
+	}
+	return nil
 }
