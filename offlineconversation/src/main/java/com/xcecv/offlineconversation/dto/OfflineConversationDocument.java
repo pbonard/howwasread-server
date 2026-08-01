@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Builder
-public record OfflineConversationSearchResponse(
+public record OfflineConversationDocument(
     UUID id,
     String novel,
     String poem,
@@ -14,11 +14,10 @@ public record OfflineConversationSearchResponse(
     String play,
     String film,
     String writtenBy,
-    String rule,
-    String mapsLink,
-    String location,
     Instant time,
-    double lat,
-    double lng
+    String h3Res5,
+    String h3Res7,
+    double latitude,
+    double longitude
 ) {
 }
