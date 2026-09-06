@@ -23,7 +23,7 @@ func conversationRouter(c *Controller) {
 	c.Router(POST, "/onlineconversation/register", c.registerOnlineConversation)
 	c.Router(POST, "/onlineconversation/deregister", c.deregisterOnlineConversation)
 	c.Router(GET, "/onlineconversation/turn", c.getTurn)
-	c.Router(POST, "/onlineconversation/notification/reserve", c.reserveNotification)
+	c.Router(POST, "/onlineconversation/notification/schedule", c.scheduleNotification)
 	c.Router(POST, "/onlineconversation/notification/cancel", c.cancelNotification)
 }
 
@@ -243,7 +243,7 @@ func (c *Controller) getTurn(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func (c *Controller) reserveNotification(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) scheduleNotification(w http.ResponseWriter, r *http.Request) {
 	memberId, err := uuid.Parse(r.Header.Get("X-User-Id"))
 	if err != nil {
 		slog.Error("fail to parse member id",

@@ -175,21 +175,28 @@ func (s *Service) GetConversationDetail(ctx context.Context, conversationId, mem
 			break
 		}
 	}
+	var isNotificationScheduled bool
+	for _, n := range c.NotificationIds {
+		if bytes.Equal(n.Data, memberId[:]) {
+			isNotificationScheduled = true
+		}
+	}
 	resp := dto.OnlineConversationDetailResponse{
-		Id:           uuid.UUID(c.Id.Data),
-		Novel:        c.Novel,
-		ShortStory:   c.ShortStory,
-		Poem:         c.Poem,
-		Play:         c.Play,
-		Film:         c.Film,
-		WrittenBy:    c.WrittenBy,
-		Rule:         c.Rule,
-		Capacity:     c.Capacity,
-		Time:         c.Time,
-		Length:       c.Length.String(),
-		CanEnter:     canEnter,
-		ModeratorIds: modIds,
-		IsRegistrant: isRegistrant,
+		Id:                      uuid.UUID(c.Id.Data),
+		Novel:                   c.Novel,
+		ShortStory:              c.ShortStory,
+		Poem:                    c.Poem,
+		Play:                    c.Play,
+		Film:                    c.Film,
+		WrittenBy:               c.WrittenBy,
+		Rule:                    c.Rule,
+		Capacity:                c.Capacity,
+		Time:                    c.Time,
+		Length:                  c.Length.String(),
+		CanEnter:                canEnter,
+		ModeratorIds:            modIds,
+		IsRegistrant:            isRegistrant,
+		IsNotificationScheduled: isNotificationScheduled,
 	}
 	return &resp, nil
 }
