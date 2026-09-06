@@ -34,8 +34,9 @@ func (r *Repository) SaveConversation(ctx context.Context, memberId, conversatio
 		RegistrantIds: []bson.Binary{
 			{4, memberId[:]},
 		},
-		BanIds:      []bson.Binary{},
-		ReporterIds: []bson.Binary{},
+		BanIds:          []bson.Binary{},
+		ReporterIds:     []bson.Binary{},
+		NotificationIds: []bson.Binary{},
 	}
 	session, err := r.mongoClient.StartSession()
 	if err != nil {
