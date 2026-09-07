@@ -37,7 +37,7 @@ func NewServer() {
 		if err != nil {
 			slog.Error("fail to listen and serve http",
 				"err", err)
-			return
+			panic(err)
 		}
 	}()
 
