@@ -15,7 +15,7 @@ import lombok.Setter;
 public class OfflineConversationParticipant {
   @NotNull
   @EmbeddedId
-  private ParticipantCompositeKey key;
+  private ConversationMemberCompositeKey key;
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
