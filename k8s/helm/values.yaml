@@ -10,183 +10,14 @@ circuitBreaker:
   maxParallelRequests: 100 # Limits active, concurrent HTTP requests
 
 apps:
-  auth:
-    image: "backend/auth:105237d"
-    port: 8080
-    routePath: /auth
-    authentication: true
-    garage: false
-    confluent: false
-    kafka: false
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: true
-    twilio: true
-    firebase: false
-    valkey: false
-    opensearch: false
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  chat:
-    image: "backend/chat:98cdf63"
-    port: 8080
-    routePath: /chat
-    authentication: false
-    garage: true
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  expo-notification:
-    image: "backend/expo-notification:105237d"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    firebase: false
-    valkey: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  fcmnotification:
-    image: "backend/fcmnotification:98cdf63"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: true
-    valkey: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  messagepersist:
-    image: "backend/messagepersist:98cdf63"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: false
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  messagepreprocess:
-    image: "backend/messagepreprocess:98cdf63"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  messagerelay:
-    image: "backend/messagerelay:98cdf63"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  notification:
-    image: "backend/notification:98cdf63"
-    port: 8080
-    routePath: /notification
-    authentication: false
-    garage: true
-    kafka: true
-    k8ssandra: true
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: false
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
   onlineconversation:
     image: "backend/onlineconversation:98cdf63"
     port: 8080
     routePath: /onlineconversation
-    authentication: false
-    garage: false
     kafka: true
-    k8ssandra: false
-    mongodb: false
     mysql: true
-    smtp: false
-    twilio: false
-    firebase: false
     valkey: true
     opensearch: true
-#    cpuRequests: "0.03"
-#    memoryRequests: "10Mi"
-#    cpuLimits: "0.1"
-#    memoryLimits: "10Mi"
-  signalrelay:
-    image: "backend/signalrelay:98cdf63"
-    port: 8080
-    routePath: false
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: false
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: true
 #    cpuRequests: "0.03"
 #    memoryRequests: "10Mi"
 #    cpuLimits: "0.1"
@@ -195,15 +26,8 @@ apps:
     image: "backend/offlineconversation:105237d"
     port: 8080
     routePath: /offlineconversation
-    authentication: false
-    garage: false
     kafka: true
-    k8ssandra: false
-    mongodb: false
     mysql: true
-    smtp: false
-    twilio: false
-    firebase: false
     valkey: true
     opensearch: false
     framework: spring-boot
@@ -211,42 +35,6 @@ apps:
 #    memoryRequests: "100Mi"
 #    cpuLimits: "0.4"
 #    memoryLimits: "100Mi"
-  search:
-    image: "backend/search:fd20acd"
-    port: 8080
-    routePath: /search
-    authentication: false
-    garage: false
-    kafka: true
-    k8ssandra: false
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: false
-    opensearch: true
-    framework: spring-boot
-  #    cpuRequests: "0.3"
-  #    memoryRequests: "100Mi"
-  #    cpuLimits: "0.4"
-  #    memoryLimits: "100Mi"
-  turn:
-    image: "backend/turn:98cdf63"
-    port: 3478
-    routePath: false
-    turn: true
-    authentication: false
-    garage: false
-    kafka: false
-    k8ssandra: false
-    mongodb: false
-    mysql: false
-    smtp: false
-    twilio: false
-    firebase: false
-    valkey: false
-    opensearch: false
 
 # Flink jobs run by the flink operator in the flink namespace (namespace, operator and ghcr secret come from bootstrap)
 flink:
@@ -282,35 +70,7 @@ flink:
   taskManager:
     memory: "640m"
     cpu: 0.5
-  # env of every job (the config-map in the flink namespace)
-  config:
-    KAFKA_BOOTSTRAP_SERVERS: "kafka-cluster-kafka-bootstrap.kafka-system.svc.cluster.local:9093"
-    KAFKA_USER_CERT_PATH: "/cert/kafka/user/user.crt"
-    KAFKA_USER_KEY_PATH: "/cert/kafka/user/user.key"
-    KAFKA_CA_CERT_PATH: "/cert/kafka/cluster/ca.crt"
-    VITESS_VTGATE_HOST: "vitess-cluster-vtgate-6e607aba.vitess.svc.cluster.local"
-    VITESS_VTGATE_GRPC_PORT: "15999"
   jobs:
-    scheduled-notification-job:
-      image: flink/schedulednotificationjob:105237d
-      jar: schedulednotificationjob.jar
-      entryClass: schedulednotificationjob.ScheduledNotificationJob
-      parallelism: 2
-      flinkConfiguration:
-        state.backend.type: rocksdb
-        execution.checkpointing.incremental: "true"
-        taskmanager.memory.managed.size: "64m"
-        jobmanager.memory.jvm-metaspace.size: "128m"
-    exponential-backoff-retry-job:
-      image: flink/exponentialbackoffretryjob:105237d
-      jar: exponentialbackoffretryjob.jar
-      entryClass: exponentialbackoffretryjob.ExponentialBackoffRetryJob
-      parallelism: 2
-      flinkConfiguration:
-        state.backend.type: rocksdb
-        execution.checkpointing.incremental: "true"
-        taskmanager.memory.managed.size: "64m"
-        jobmanager.memory.jvm-metaspace.size: "128m"
     conversation-cdc-job:
       image: flink/conversationcdcjob:105237d
       jar: conversationcdcjob.jar

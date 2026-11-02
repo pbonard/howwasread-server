@@ -9,11 +9,6 @@ metadata:
     app: {{ $name }}
 spec:
   # replicas: 1
-  {{- if $app.turn }}
-  # host ports can't be held by the old and the new pod at once, so the old pod stops before the new one starts
-  strategy:
-    type: Recreate
-  {{- end }}
   selector:
     matchLabels:
       app: {{ $name }}
@@ -23,19 +18,6 @@ spec:
         app: {{ $name }}
         framework: {{ $app.framework | default "none" }}
     spec:
-      {{- if $app.turn }}
-      hostNetwork: true
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - {{ $name }}
-              topologyKey: "kubernetes.io/hostname"
-      {{- end }}
       {{- if hasPrefix "ghcr.io/" $.Values.registry }}
       imagePullSecrets:
         - name: ghcr
@@ -61,18 +43,6 @@ spec:
                   name: valkey-user
                   key: lule
             {{- end}}
-            {{- if $app.k8ssandra }}
-            - name: K8SSANDRA_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: k8ssandra-cluster-superuser
-                  key: username
-            - name: K8SSANDRA_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: k8ssandra-cluster-superuser
-                  key: password
-            {{- end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
@@ -80,51 +50,15 @@ spec:
           envFrom:
             - configMapRef:
                 name: config-map
-            {{- if $app.turn }}
-            - secretRef:
-                name: cloudflaredns
-            {{- end }}
-            {{- if $app.garage }}
-            - secretRef:
-                name: garage-s3
-            {{- end }}
             {{- if $app.mysql }}
             - secretRef:
                 name: mysql
-            {{- end }}
-            {{- if $app.smtp }}
-            - secretRef:
-                name: smtp
-            {{- end }}
-            {{- if $app.twilio }}
-            - secretRef:
-                name: twilio
             {{- end }}
             {{- if $app.opensearch }}
             - secretRef:
                 name: opensearch-backend-user
             {{- end }}
           volumeMounts:
-            {{- if $app.authentication}}
-            - name: authentication-volume
-              mountPath: "/cert/authentication"
-              readOnly: true
-            {{- end}}
-            {{- if $app.k8ssandra }}
-            - name: internal-root-ca-bundle
-              mountPath: "/cert/k8ssandra"
-              readOnly: true
-            {{- end }}
-            {{- if $app.firebase }}
-            - name: firebase-volume
-              mountPath: "/cert/firebase"
-              readOnly: true
-            {{- end }}
-            {{- if $app.mongodb }}
-            - name: mongodb-volume
-              mountPath: "/cert/mongodb"
-              readOnly: true
-            {{- end }}
             {{- if $app.kafka }}
             - name: kafka-user
               mountPath: "/cert/kafka/user"
@@ -138,37 +72,7 @@ spec:
               mountPath: "/cert/valkey"
               readOnly: true
             {{- end }}
-            {{- if $app.turn }}
-            - name: turn-cert-volume
-              mountPath: "/cert/turn"
-              readOnly: true
-            {{- end }}
       volumes:
-        {{- if $app.k8ssandra }}
-        - name: internal-root-ca-bundle
-          configMap:
-            name: internal-root-ca-bundle
-        {{- end }}
-        {{- if $app.turn }}
-        - name: turn-cert-volume
-          secret:
-            secretName: turn-tls-cert
-        {{- end }}
-        {{- if $app.authentication}}
-        - name: authentication-volume
-          secret:
-            secretName: authentication-volume
-        {{- end}}
-        {{- if $app.firebase }}
-        - name: firebase-volume
-          secret:
-            secretName: firebase-volume
-        {{- end }}
-        {{- if $app.mongodb }}
-        - name: mongodb-volume
-          secret:
-            secretName: mongodb-volume
-        {{- end }}
         {{- if $app.kafka }}
         - name: kafka-user
           secret:
@@ -186,7 +90,6 @@ spec:
                 path: ca.crt
         {{- end }}
 
-{{- if not $app.turn }}
 ---
 apiVersion: v1
 kind: Service
@@ -202,7 +105,6 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: {{ $app.port }}
-{{- end }}
 
 {{/*apiVersion: autoscaling/v2*/}}
 {{/*kind: HorizontalPodAutoscaler*/}}

@@ -7,11 +7,11 @@ from pathlib import Path
 from deploy_tags import get_helm_values_tag, deploy, plan, replace_tag
 
 VALUES = """apps:
-  auth:
-    image: "backend/auth:latest"
+  onlineconversation:
+    image: "backend/onlineconversation:latest"
     port: 8080
-  search:
-    image: "backend/search:1111111"
+  offlineconversation:
+    image: "backend/offlineconversation:1111111"
 flink:
   jobs:
     conversation-cdc-job:
@@ -21,7 +21,7 @@ flink:
 
 class TagTest(unittest.TestCase):
     def test_current_tag_reads_quoted_and_unquoted_images(self):
-        self.assertEqual(get_helm_values_tag(VALUES, "backend/auth"), "latest")
+        self.assertEqual(get_helm_values_tag(VALUES, "backend/onlineconversation"), "latest")
         self.assertEqual(get_helm_values_tag(VALUES, "flink/conversationcdcjob"), "2222222")
 
     def test_current_tag_rejects_a_missing_image(self):
@@ -30,31 +30,31 @@ class TagTest(unittest.TestCase):
 
     def test_a_name_that_is_a_prefix_of_another_image_is_not_matched(self):
         with self.assertRaises(ValueError):
-            get_helm_values_tag(VALUES, "backend/aut")
+            get_helm_values_tag(VALUES, "backend/online")
 
     def test_replace_tag_changes_only_that_line(self):
-        changed = replace_tag(VALUES, "backend/search", "abc1234")
-        self.assertEqual(changed, VALUES.replace("backend/search:1111111", "backend/search:abc1234"))
+        changed = replace_tag(VALUES, "backend/offlineconversation", "abc1234")
+        self.assertEqual(changed, VALUES.replace("backend/offlineconversation:1111111", "backend/offlineconversation:abc1234"))
 
 
 class PlanTest(unittest.TestCase):
     def plan(self, is_older=lambda sha, tag: False):
-        return plan(VALUES, ["backend/auth", "backend/search"], "abc1234", is_older)
+        return plan(VALUES, ["backend/onlineconversation", "backend/offlineconversation"], "abc1234", is_older)
 
     def test_writes_every_image_with_another_tag(self):
         values, written = self.plan()
-        self.assertEqual(written, ["backend/auth", "backend/search"])
-        self.assertIn('image: "backend/auth:abc1234"', values)
-        self.assertIn('image: "backend/search:abc1234"', values)
+        self.assertEqual(written, ["backend/onlineconversation", "backend/offlineconversation"])
+        self.assertIn('image: "backend/onlineconversation:abc1234"', values)
+        self.assertIn('image: "backend/offlineconversation:abc1234"', values)
 
     def test_an_image_already_at_the_tag_is_not_written(self):
-        values, written = plan(VALUES, ["backend/search"], "1111111", lambda sha, tag: False)
+        values, written = plan(VALUES, ["backend/offlineconversation"], "1111111", lambda sha, tag: False)
         self.assertEqual((values, written), (VALUES, []))
 
     def test_an_older_build_does_not_replace_a_newer_tag(self):
         values, written = self.plan(is_older=lambda sha, tag: tag == "1111111")
-        self.assertEqual(written, ["backend/auth"])
-        self.assertIn('image: "backend/search:1111111"', values)
+        self.assertEqual(written, ["backend/onlineconversation"])
+        self.assertIn('image: "backend/offlineconversation:1111111"', values)
 
 
 def run(cwd, *args):
@@ -78,8 +78,8 @@ class DeployTest(unittest.TestCase):
             run(self.work, "git", "commit", "-q", "--allow-empty", "-m", message)
             self.commits.append(run(self.work, "git", "rev-parse", "HEAD"))
         (self.work / "values.yaml").write_text(
-            f'apps:\n  auth:\n    image: "backend/auth:latest"\n'
-            f'  turn:\n    image: "backend/turn:{self.commits[2][:7]}"\n'
+            f'apps:\n  onlineconversation:\n    image: "backend/onlineconversation:latest"\n'
+            f'  offlineconversation:\n    image: "backend/offlineconversation:{self.commits[2][:7]}"\n'
         )
         run(self.work, "git", "add", "-A")
         run(self.work, "git", "commit", "-qm", "values")
@@ -96,18 +96,18 @@ class DeployTest(unittest.TestCase):
 
     def test_one_commit_for_every_written_image_and_older_builds_skipped(self):
         sha = self.commits[1]
-        deploy("values.yaml", ["backend/auth", "backend/turn"], sha, "main")
+        deploy("values.yaml", ["backend/onlineconversation", "backend/offlineconversation"], sha, "main")
 
         message = run(self.work, "git", "--git-dir", str(self.origin), "log", "-1", "--format=%s|%b", "main")
-        self.assertEqual(message.strip(), f"deploy: {sha[:7]}|backend/auth")
-        self.assertIn(f'image: "backend/auth:{sha[:7]}"', self.origin_values())
-        self.assertIn(f'image: "backend/turn:{self.commits[2][:7]}"', self.origin_values())
+        self.assertEqual(message.strip(), f"deploy: {sha[:7]}|backend/onlineconversation")
+        self.assertIn(f'image: "backend/onlineconversation:{sha[:7]}"', self.origin_values())
+        self.assertIn(f'image: "backend/offlineconversation:{self.commits[2][:7]}"', self.origin_values())
 
     def test_the_same_build_again_makes_no_commit(self):
         sha = self.commits[1]
-        deploy("values.yaml", ["backend/auth"], sha, "main")
+        deploy("values.yaml", ["backend/onlineconversation"], sha, "main")
         before = run(self.work, "git", "--git-dir", str(self.origin), "rev-parse", "main")
-        deploy("values.yaml", ["backend/auth"], sha, "main")
+        deploy("values.yaml", ["backend/onlineconversation"], sha, "main")
         self.assertEqual(run(self.work, "git", "--git-dir", str(self.origin), "rev-parse", "main"), before)
 
 

@@ -1,0 +1,41 @@
+# go tool mockery generates testify mocks.
+# - common interfaces go to common/mocks (package mocks), shared by every service's tests
+# - a service's own interfaces go to <service>/test as _test.go files
+template: testify
+filename: "mock_{{.InterfaceName | snakecase}}_test.go"
+structname: "Mock{{.InterfaceName}}"
+packages:
+  backend/common/producer:
+    interfaces:
+      SyncProducer:
+        config:
+          dir: common/mocks
+          pkgname: mocks
+          filename: mock_sync_producer.go
+      AsyncProducer:
+        config:
+          dir: common/mocks
+          pkgname: mocks
+          filename: mock_async_producer.go
+  backend/onlineconversation/internal/repository:
+    interfaces:
+      Repository:
+        configs:
+          - dir: onlineconversation/test
+            pkgname: test
+      Tx:
+        configs:
+          - dir: onlineconversation/test
+            pkgname: test
+  backend/onlineconversation/internal/service:
+    interfaces:
+      Service:
+        configs:
+          - dir: onlineconversation/test
+            pkgname: test
+  backend/onlineconversation/internal/client:
+    interfaces:
+      ModerationClient:
+        configs:
+          - dir: onlineconversation/test
+            pkgname: test

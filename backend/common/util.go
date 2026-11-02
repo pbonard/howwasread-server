@@ -5,37 +5,10 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log/slog"
 	"math/rand/v2"
-	"net"
-	"net/http"
 	"os"
-	"strings"
-	"time"
 )
-
-func FetchPublicWANIP() (net.IP, error) {
-	client := http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get("https://api.ipify.org")
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch public IP: %w", err)
-	}
-	defer resp.Body.Close()
-
-	ipBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	ipStr := strings.TrimSpace(string(ipBytes))
-	parsedIP := net.ParseIP(ipStr)
-	if parsedIP == nil {
-		return nil, fmt.Errorf("invalid IP format received: %s", ipStr)
-	}
-
-	return parsedIP, nil
-}
 
 func CreateTlSConfig(certFile, keyFile, caCertFile string) (tlsConfig *tls.Config, err error) {
 	tlsConfig = &tls.Config{InsecureSkipVerify: false}
