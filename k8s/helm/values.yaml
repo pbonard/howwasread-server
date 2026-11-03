@@ -84,4 +84,4 @@ flink:
         # sql planning runs in the jobmanager, it needs more metaspace and heap than the datastream jobs
         jobmanager.memory.jvm-metaspace.size: "160m"
       jobManager:
-        memory: "512m"
+        memory: "1024m"
