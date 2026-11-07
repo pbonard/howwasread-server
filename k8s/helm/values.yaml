@@ -31,10 +31,10 @@ apps:
     valkey: true
     opensearch: false
     framework: spring-boot
-#    cpuRequests: "0.3"
-#    memoryRequests: "100Mi"
-#    cpuLimits: "0.4"
-#    memoryLimits: "100Mi"
+    # without -Xmx the default max heap is a quarter of the node, about 7 GiB
+    javaOptions: "-Xmx256m -XX:+ExitOnOutOfMemoryError"
+    memoryRequests: "512Mi"
+    memoryLimits: "640Mi"
 
 # Flink jobs run by the flink operator in the flink namespace (namespace, operator and ghcr secret come from bootstrap)
 flink:
