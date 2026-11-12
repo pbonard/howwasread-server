@@ -1,14 +1,5 @@
 [
   {
-    "name": "conversationcdcjob",
-    "image": "flink/conversationcdcjob",
-    "dockerfile": "./backend/conversationcdcjob/Dockerfile",
-    "context": "./backend/conversationcdcjob",
-    "paths": [
-      "backend/conversationcdcjob/"
-    ]
-  },
-  {
     "name": "offlineconversation",
     "image": "backend/offlineconversation",
     "dockerfile": "./backend/offlineconversation/Dockerfile",
