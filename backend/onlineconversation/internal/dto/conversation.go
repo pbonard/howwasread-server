@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -58,16 +57,6 @@ type OnlineConversationDetailResponse struct {
 	IsNotificationScheduled bool      `json:"isNotificationScheduled"`
 }
 
-type ConversationSignalResponse struct {
-	FromIds []uuid.UUID     `json:"fromIds"`
-	Signal  json.RawMessage `json:"signal,omitempty"`
-}
-
-type ConversationSignalRequest struct {
-	ToIds  []uuid.UUID     `json:"toIds"`
-	Signal json.RawMessage `json:"signal"`
-}
-
 type OnlineConversationFeedResponse struct {
 	Id         uuid.UUID `json:"id"`
 	Novel      string    `json:"novel,omitempty"`
@@ -82,12 +71,6 @@ type OnlineConversationFeedResponse struct {
 type BanParticipantRequest struct {
 	ConversationId uuid.UUID `json:"conversationId"`
 	BanId          uuid.UUID `json:"banId"`
-}
-
-type GetTurnResponse struct {
-	Uris       []string `json:"uris"`
-	Username   string   `json:"username"`
-	Credential string   `json:"credential"`
 }
 
 // Verdict is the moderation result of a reported conversation

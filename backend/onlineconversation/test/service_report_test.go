@@ -18,14 +18,14 @@ import (
 )
 
 func newReportService(t *testing.T, repo *MockRepository, m *MockModerationClient) service.Service {
-	return service.NewService(repo, mocks.NewMockSyncProducer(t), mocks.NewMockAsyncProducer(t), m)
+	return service.NewService(repo, mocks.NewMockSyncProducer(t), m)
 }
 
 func TestReportConversation_keysByConversationWithoutValue(t *testing.T) {
 	p := mocks.NewMockSyncProducer(t)
 	p.EXPECT().Commit("online-conversation", conversationId[:], []byte(nil), mock.Anything).Return(nil)
 
-	s := service.NewService(NewMockRepository(t), p, mocks.NewMockAsyncProducer(t), NewMockModerationClient(t))
+	s := service.NewService(NewMockRepository(t), p, NewMockModerationClient(t))
 
 	require.NoError(t, s.ReportConversation(context.Background(), conversationId, memberId))
 }

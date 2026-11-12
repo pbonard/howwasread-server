@@ -1,11 +1,8 @@
 package test
 
 import (
-	"backend/common/proto"
 	"backend/onlineconversation/internal/controller"
 	"backend/onlineconversation/internal/dto"
-	"backend/onlineconversation/internal/grpccontroller"
-	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -159,29 +156,13 @@ func TestController_serviceErrorIsBadRequest(t *testing.T) {
 	assert.Equal(t, "already fully registered", rec.Body.String())
 }
 
-func TestController_detailAndTurnAreJSON(t *testing.T) {
+func TestController_detailIsJSON(t *testing.T) {
 	svc := NewMockService(t)
 	svc.EXPECT().GetConversationDetail(mock.Anything, conversationId, memberId).
 		Return(&dto.OnlineConversationDetailResponse{Novel: "Hamlet", CanEnter: true}, nil)
-	svc.EXPECT().GenerateTurn().Return(&dto.GetTurnResponse{Username: "123", Credential: "abc"})
 
 	detail := serve(svc, http.MethodGet, "/onlineconversation/detail?id="+conversationId.String(), memberId.String(), "")
-	turn := serve(svc, http.MethodGet, "/onlineconversation/turn", memberId.String(), "")
 
 	require.Equal(t, http.StatusOK, detail.Code)
 	assert.Contains(t, detail.Body.String(), `"novel":"Hamlet"`)
-	require.Equal(t, http.StatusOK, turn.Code)
-	assert.Contains(t, turn.Body.String(), `"credential":"abc"`)
-}
-
-func TestGRPCController_relaySignalWithoutConnectedMembers(t *testing.T) {
-	gc := grpccontroller.NewGRPCController(controller.NewController(NewMockService(t), http.NewServeMux()))
-	other := uuid.New()
-
-	res, err := gc.RelaySignal(context.Background(), &proto.RelaySignalRequest{
-		FromId: memberId[:], ToIds: [][]byte{other[:]}, Signal: []byte(`{}`),
-	})
-
-	assert.NoError(t, err)
-	assert.Nil(t, res)
 }

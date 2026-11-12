@@ -1,16 +1,6 @@
 package common
 
-import (
-	"encoding/json"
-
-	"github.com/google/uuid"
-)
-
-type OnlineConversationSignal struct {
-	FromId []byte          `json:"fromId"`
-	ToIds  [][]byte        `json:"toIds"`
-	Signal json.RawMessage `json:"signal,omitempty"`
-}
+import "github.com/google/uuid"
 
 type NotificationScheduling struct {
 	ScheduledTime int64          `json:"scheduledTime,omitempty"`

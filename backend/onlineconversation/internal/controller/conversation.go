@@ -15,12 +15,10 @@ func conversationRouter(c *Controller) {
 	c.Router(POST, "/onlineconversation/create", c.createConversation)
 	c.Router(DELETE, "/onlineconversation/delete", c.deleteConversation)
 	c.Router(PUT, "/onlineconversation/update", c.updateConversation)
-	c.Router(GET, "/onlineconversation/join", c.joinConversation)
 	c.Router(GET, "/onlineconversation/detail", c.getConversationDetail)
 	c.Router(POST, "/onlineconversation/ban", c.banParticipant)
 	c.Router(POST, "/onlineconversation/register", c.registerConversation)
 	c.Router(POST, "/onlineconversation/deregister", c.deregisterConversation)
-	c.Router(GET, "/onlineconversation/turn", c.getTurn)
 	c.Router(POST, "/onlineconversation/notification/schedule", c.scheduleNotification)
 	c.Router(POST, "/onlineconversation/notification/cancel", c.cancelNotification)
 	c.Router(POST, "/onlineconversation/report", c.reportConversation)
@@ -214,16 +212,6 @@ func (c *Controller) deregisterConversation(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-}
-
-func (c *Controller) getTurn(w http.ResponseWriter, _ *http.Request) {
-	result := c.service.GenerateTurn()
-	w.WriteHeader(http.StatusOK)
-	err := json.NewEncoder(w).Encode(result)
-	if err != nil {
-		slog.Error("fail to write response body",
-			"err", err)
-	}
 }
 
 func (c *Controller) scheduleNotification(w http.ResponseWriter, r *http.Request) {
