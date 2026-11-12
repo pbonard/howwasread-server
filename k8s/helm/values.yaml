@@ -11,7 +11,7 @@ circuitBreaker:
 
 apps:
   onlineconversation:
-    image: "backend/onlineconversation:ca3c8f7"
+    image: "backend/onlineconversation:333f407"
     port: 8080
     routePath: /onlineconversation
     kafka: true
@@ -24,7 +24,7 @@ apps:
 #    cpuLimits: "0.1"
 #    memoryLimits: "10Mi"
   offlineconversation:
-    image: "backend/offlineconversation:ca3c8f7"
+    image: "backend/offlineconversation:333f407"
     port: 8080
     routePath: /offlineconversation
     kafka: true
