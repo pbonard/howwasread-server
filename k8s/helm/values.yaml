@@ -16,7 +16,8 @@ apps:
     routePath: /onlineconversation
     kafka: true
     mysql: true
-    valkey: true
+    # its calls (websocket, valkey keys, turn credentials) are my-server's chat's
+    valkey: false
     opensearch: true
 #    cpuRequests: "0.03"
 #    memoryRequests: "10Mi"

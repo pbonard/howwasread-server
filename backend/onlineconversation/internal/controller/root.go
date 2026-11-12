@@ -2,14 +2,8 @@ package controller
 
 import (
 	"backend/onlineconversation/internal/service"
-	"context"
 	"log/slog"
 	"net/http"
-	"os"
-	"sync"
-
-	"github.com/coder/websocket"
-	"github.com/google/uuid"
 )
 
 type HTTPMethod int
@@ -24,9 +18,6 @@ const (
 type Controller struct {
 	service service.Service
 	mux     *http.ServeMux
-	conns   map[uuid.UUID]*websocket.Conn
-	csMutex *sync.RWMutex
-	podIP   string
 }
 
 func NewController(s service.Service, m *http.ServeMux) *Controller {
@@ -34,9 +25,6 @@ func NewController(s service.Service, m *http.ServeMux) *Controller {
 	c := &Controller{
 		service: s,
 		mux:     m,
-		conns:   map[uuid.UUID]*websocket.Conn{},
-		csMutex: &sync.RWMutex{},
-		podIP:   os.Getenv("POD_IP"),
 	}
 
 	conversationRouter(c)
@@ -64,15 +52,6 @@ func (c *Controller) Router(httpMethod HTTPMethod, path string, handler http.Han
 
 func getStatusCode(err error) int {
 	return http.StatusBadRequest
-}
-
-func handleWebsocketError(ctx context.Context, conn *websocket.Conn, err error) {
-	err = conn.Write(ctx, websocket.MessageText, []byte(err.Error()))
-	if err != nil {
-		slog.Error("fail to write payload",
-			"err", err,
-		)
-	}
 }
 
 func handleError(w http.ResponseWriter, err error) {

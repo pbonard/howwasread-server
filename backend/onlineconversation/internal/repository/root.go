@@ -10,9 +10,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
-	"github.com/valkey-io/valkey-go"
 
-	"backend/common"
 	"backend/onlineconversation/internal/dto"
 	"backend/onlineconversation/internal/projection"
 
@@ -34,11 +32,6 @@ type Tx interface {
 }
 
 type Repository interface {
-	FindParticipantIds(ctx context.Context, conversationId string) ([]string, error)
-	AddParticipantId(ctx context.Context, conversationId string, memberId uuid.UUID) error
-	RemoveParticipantId(ctx context.Context, conversationId string, memberId uuid.UUID) error
-	SetServerIP(ctx context.Context, memberId, ip string) error
-	RemoveServerIP(ctx context.Context, memberId string) error
 	InsertConversation(ctx context.Context, session Session, conversationId uuid.UUID, req dto.CreateConversationRequest) error
 	UpdateConversationIfModerator(ctx context.Context, session Session, memberId uuid.UUID, req dto.UpdateConversationRequest) (bool, error)
 	DeleteConversationIfModerator(ctx context.Context, session Session, conversationId, memberId uuid.UUID) (bool, error)
@@ -63,8 +56,7 @@ type Repository interface {
 }
 
 type repository struct {
-	db           *sql.DB
-	valkeyClient valkey.Client
+	db *sql.DB
 }
 
 func NewRepository() Repository {
@@ -92,27 +84,8 @@ func NewRepository() Repository {
 	}
 	slog.Info("success to connect mysql")
 
-	clientOption := valkey.ClientOption{
-		InitAddress: []string{os.Getenv("VALKEY_ADDRESS")},
-	}
-
-	tlsConfig, err := common.CreateTlSConfig("", "", os.Getenv("VALKEY_CA_CERT_PATH"))
-	if err != nil {
-		log.Panicf("fail to create tls config for valkey")
-	}
-	tlsConfig.ServerName = os.Getenv("VALKEY_HOST")
-	clientOption.TLSConfig = tlsConfig
-
-	clientOption.Username = os.Getenv("VALKEY_USERNAME")
-	clientOption.Password = os.Getenv("VALKEY_PASSWORD")
-	v, err := valkey.NewClient(clientOption)
-	if err != nil {
-		log.Panicf("fail to connect to redis: %v", err)
-	}
-
 	return &repository{
-		db:           db,
-		valkeyClient: v,
+		db: db,
 	}
 }
 

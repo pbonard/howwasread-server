@@ -3,13 +3,15 @@ package offlineconversation.dto;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 public record ChatMessage(
-    byte[] id,
-    byte[] fromId,
+    // uuids, jackson writes them as their strings, as the uuid.UUID of my-server's ChatMessage reads them
+    UUID id,
+    UUID fromId,
     String toIdType,
-    byte[] toId,
+    UUID toId,
     String contentType,
     List<String> contents
 ) {
